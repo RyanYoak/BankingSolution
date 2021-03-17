@@ -15,7 +15,7 @@ namespace BankingTests
 
         public BankAccountTests()
         {
-            _account = new BankAccount();
+            _account = new BankAccount(new DummyBonusCalculator());
             _balance = _account.GetBalance();
         }
 
@@ -56,6 +56,13 @@ namespace BankingTests
                 _balance - amountToWithdraw,
                 _account.GetBalance()
             );
+        }
+    }
+    public class DummyBonusCalculator : ICanCalculateBankAccountBonuses
+    {
+        public decimal For(decimal balance, decimal amountToDeposit)
+        {
+            return 0;
         }
     }
 }
