@@ -12,11 +12,28 @@ namespace BankingTests
     public class BankAccountInteractionTests
     {
         [Fact]
+        public void WithdrawslNotifyTheFeds()
+        {
+            // Given
+            var mockedFedNotifier = new Mock<INotifyTheFeds>();
+            var account = new BankAccount(null, mockedFedNotifier.Object);
+            var openginBallance = account.GetBalance();
+            var amountToWithdraw = 142M;
+
+            // When
+            account.Withdraw(amountToWithdraw);
+
+            // Then
+            // This verifies that this was called with these two paramaters
+            mockedFedNotifier.Verify(f => f.NotifyOfWithdraw(account, amountToWithdraw));
+        }
+
+        [Fact]
         public void DepositUsesTheBonusCalculator()
         {
             // Given
             var stubbedBonusCalculator = new Mock<ICanCalculateBankAccountBonuses>();
-            var account = new BankAccount(stubbedBonusCalculator.Object);
+            var account = new BankAccount(stubbedBonusCalculator.Object, null);
             var openingBalance = account.GetBalance();
             var amountToDeposit = 10M;
             stubbedBonusCalculator.Setup(c => c.For(openingBalance, amountToDeposit)).Returns(42);
