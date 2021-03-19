@@ -22,13 +22,23 @@ namespace BankingDomain
         public void Deposit(decimal amountToDeposit)
         {
             // write the code I wish I had
+            GuardNoNegatives(amountToDeposit);
             decimal bonus = _bankAccountBonusCalculator.For(_balance, amountToDeposit);
             _balance += amountToDeposit + bonus;
         }
 
+        private static void GuardNoNegatives(decimal amountToDeposit)
+        {
+            if (amountToDeposit < 0)
+            {
+                throw new NoNegativeNumberTransactionsException();
+            }
+        }
+
         public void Withdraw(decimal amountToWithdraw)
         {
-            if(amountToWithdraw > _balance)
+            GuardNoNegatives(amountToWithdraw);
+            if (amountToWithdraw > _balance)
             {
                 throw new OverdraftException();
             }
